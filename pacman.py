@@ -24,6 +24,25 @@ flicker = False
 turns_allowed = [False, False, False, False]
 direction_command = 0
 player_speed = 2
+score = 0
+
+def draw_misc():
+    score_text = font.render(f'Score: {score}', True, 'white')
+    screen.blit(score_text, (20, 20))
+
+def check_collisions(total_score):
+    num1 = (HEIGHT - 50) // 32
+    num2 = WIDTH // 30
+    if 0 < player_x < 870:
+        if level[center_y // num1][center_x // num2] == 1:
+            # clear the dot off the tile
+            level[center_y // num1][center_x // num2] = 0
+            total_score += 10
+        if level[center_y // num1][center_x // num2] == 2:
+            level[center_y // num1][center_x // num2] = 0
+            total_score += 50
+        
+    return total_score
 
 def draw_board():
     num1 = ((HEIGHT - 50) // 32)
@@ -150,10 +169,12 @@ while run:
     screen.fill('black')
     draw_board()
     draw_player()
+    draw_misc()
     center_x = player_x + 23
     center_y = player_y + 24
     turns_allowed = check_position(center_x, center_y)
     player_x, player_y = move_player(player_x, player_y)
+    score = check_collisions(score)
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
